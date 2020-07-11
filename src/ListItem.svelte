@@ -2,9 +2,8 @@
   export let img = "";
   export let title = "";
   export let description = "";
-
+  let pageContent = "";
   function fetchContent() {
-    visible = true;
     fetch(
       `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exsentences=10&exlimit=1&titles=${title}&explaintext=1&formatversion=2&format=json&origin=*`
     )

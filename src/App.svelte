@@ -1,6 +1,6 @@
 <script>
   import Nav from "./Nav.svelte";
-  import { slide, fly } from "svelte/transition";
+  import { slide, fly, scale } from "svelte/transition";
   import Search from "./Search.svelte";
   import ListItem from "./ListItem.svelte";
   let listItems = [];
@@ -54,7 +54,22 @@
     background-color: #fff;
     font-size: 2rem;
     padding: 1rem 2rem;
-    margin: 2rem 0;
+    margin: 2rem 0 4rem 0;
+  }
+  .book {
+    font-size: 2.1rem;
+    color: #fff;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .book img {
+    width: 10rem;
+  }
+  .book p {
+    margin-top: -10rem;
   }
 </style>
 
@@ -90,6 +105,11 @@
             </button>
           </div>
         {/if}
+      {:else}
+        <div class="book" transition:scale={{ duration: 300 }}>
+          <p>Search for Articles</p>
+          <img src="./images/book.svg" alt="" class="book" />
+        </div>
       {/if}
     {/if}
 
