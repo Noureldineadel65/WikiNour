@@ -9,8 +9,9 @@
 }
 html,
 body {
-	background: url("./images/Endless-Constellation.svg"), #2a002a;
-	background-size: cover;
+	background: url(./images/celebration.png);
+	background-size: auto;
+
 	color: #222;
 	font-family: "Playfair Display", serif;
 	font-weight: 400;

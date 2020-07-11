@@ -1,24 +1,13 @@
 <script>
   import { createEventDispatcher } from "svelte";
+
   const dispatch = createEventDispatcher();
   let open = false;
   let searched = "";
-  let results = [];
-  let gsroffset = 0;
-  function getResults(search) {
-    if (search) {
-      fetch(
-        `https://en.wikipedia.org/w/api.php?format=json&action=query&generator=search&gsrnamespace=0&gsrlimit=20&prop=pageimages|extracts&exintro&explaintext&exsentences=1&exlimit=max&gsrsearch=${search}&origin=*`
-      )
-        .then(blob => blob.json())
-        .then(e => {
-          gsroffset = e.continue.gsroffset;
-          results = Object.values(e.query.pages);
-          dispatch("searched", results);
-        });
-    }
-  }
-  $: getResults(searched);
+  let clickHere = true;
+  export let loadedMore = false;
+
+  $: dispatch("search", searched);
 </script>
 
 <style>
@@ -37,11 +26,13 @@
     margin-top: -22.5rem;
   }
   .opened .wiki-circle {
-    right: 0%;
+    right: 2.5%;
+    /* box-shadow: 0px 0px 16px 10px rgba(255, 255, 255, 1); */
   }
   .opened input {
     width: 100%;
     opacity: 1;
+    /* box-shadow: 0px 0px 16px 10px rgba(255, 255, 255, 1); */
   }
   .wiki-circle img {
     width: 50%;
@@ -64,6 +55,22 @@
     transition: all 0.6s;
     /* width: 100%; */
   }
+  .click-here {
+    font-size: 2rem;
+    top: -12rem;
+    opacity: 0.5;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: upanddown 0.6s infinite alternate linear;
+  }
+  @keyframes upanddown {
+    0% {
+      top: -12rem;
+    }
+    100% {
+      top: -12.5rem;
+    }
+  }
 </style>
 
 <div class="search absolute flex items-center" class:opened={open}>
@@ -72,9 +79,23 @@
     id="search"
     placeholder="Search Encylopedia..."
     bind:value={searched} />
+  {#if clickHere}
+    <span class="click-here text-white absolute flex items-center flex-col">
+      <span>Click Here</span>
+      <img src="./images/arrow.svg" alt="" />
+    </span>
+  {/if}
   <div
     class="wiki-circle flex items-center justify-center absolute"
-    on:click={() => (open = !open)}>
-    <img src="./images/wiki.svg" alt="" />
+    on:click={() => {
+      open = !open;
+      dispatch('open', open);
+      clickHere = !open;
+    }}>
+    {#if open}
+      <img src="./images/search.svg" alt="" />
+    {:else}
+      <img src="./images/wiki.svg" alt="" />
+    {/if}
   </div>
 </div>
