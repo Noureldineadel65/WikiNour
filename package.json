@@ -1,5 +1,5 @@
 {
-	"name": "svelte-app",
+	"name": "WikiNour",
 	"version": "1.0.0",
 	"scripts": {
 		"watch:tailwind": "postcss public/tailwind.css -o public/index.css -w",
