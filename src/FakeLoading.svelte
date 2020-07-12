@@ -9,6 +9,9 @@
     min-height: 7rem;
     animation: fade 1s alternate infinite;
   }
+  .list-item-container-show :global(li:hover) {
+    transform: scale(1);
+  }
   @keyframes fade {
     0% {
       opacity: 0.8;

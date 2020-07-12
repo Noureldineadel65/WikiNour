@@ -1,10 +1,13 @@
 <script>
   import Nav from "./Nav.svelte";
-  import { slide, fly, scale } from "svelte/transition";
+  import * as animateScroll from "svelte-scrollto";
+  import { slide, fade, scale } from "svelte/transition";
   import FakeLoading from "./FakeLoading.svelte";
   import Search from "./Search.svelte";
   import ListItem from "./ListItem.svelte";
   let listItems = [];
+  let scrollY = 0;
+  let displayScroll = false;
   let open = false;
   let loadedMore = false;
   let search = "";
@@ -36,6 +39,7 @@
       listItems = [];
     }
   }
+  $: scrollY >= 236 ? (displayScroll = true) : (displayScroll = false);
 </script>
 
 <style>
@@ -72,8 +76,31 @@
     width: 4.9rem;
     margin: 4rem auto 4rem auto;
   }
+  .scrollup {
+    bottom: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.952);
+    width: 7rem;
+    height: 7rem;
+    border-radius: 50%;
+    margin: 2rem;
+    cursor: pointer;
+  }
+  .scrollup img {
+    width: 80%;
+    margin-left: -0.25rem;
+  }
 </style>
 
+<svelte:window bind:scrollY />
+{#if displayScroll}
+  <div
+    class="scrollup fixed flex items-center justify-center"
+    on:click={() => animateScroll.scrollToTop()}
+    transition:fade>
+    <img src="./images/arrow-up.svg" alt="" />
+  </div>
+{/if}
 <main>
   <Nav />
   <div class="container">
