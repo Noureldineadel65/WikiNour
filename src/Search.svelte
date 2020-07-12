@@ -8,6 +8,11 @@
   export let loadedMore = false;
 
   $: dispatch("search", searched);
+  function toggleClosing() {
+    open = !open;
+    dispatch("open", open);
+    clickHere = !open;
+  }
 </script>
 
 <style>
@@ -85,17 +90,21 @@
       <img src="./images/arrow.svg" alt="" />
     </span>
   {/if}
-  <div
-    class="wiki-circle flex items-center justify-center absolute"
-    on:click={() => {
-      open = !open;
-      dispatch('open', open);
-      clickHere = !open;
-    }}>
+  <div class="wiki-circle flex items-center justify-center absolute">
     {#if open}
-      <img src="./images/search.svg" alt="" />
+      {#if searched}
+        <img
+          src="./images/close.svg"
+          alt=""
+          on:click={() => {
+            searched = '';
+            dispatch('clear');
+          }} />
+      {:else}
+        <img src="./images/search.svg" alt="" on:click={toggleClosing} />
+      {/if}
     {:else}
-      <img src="./images/wiki.svg" alt="" />
+      <img src="./images/wiki.svg" alt="" on:click={toggleClosing} />
     {/if}
   </div>
 </div>

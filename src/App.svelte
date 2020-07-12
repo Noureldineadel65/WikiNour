@@ -1,10 +1,10 @@
 <script>
   import Nav from "./Nav.svelte";
   import { slide, fly, scale } from "svelte/transition";
+  import FakeLoading from "./FakeLoading.svelte";
   import Search from "./Search.svelte";
   import ListItem from "./ListItem.svelte";
   let listItems = [];
-  let canvas;
   let open = false;
   let loadedMore = false;
   let search = "";
@@ -29,10 +29,7 @@
           .then(e => {
             gsroffset = e.continue.gsroffset;
             listItems = [...listItems, ...Object.values(e.query.pages)];
-            console.log(listItems);
-            // console.log([...listItems, Object.values(e.query.pages)]);
             loadedMore = false;
-            // listItems = [...Object.values(e.query.pages)];
           });
       }
     } else {
@@ -71,6 +68,10 @@
   .book p {
     margin-top: -10rem;
   }
+  .loading-icon {
+    width: 4.9rem;
+    margin: 4rem auto 4rem auto;
+  }
 </style>
 
 <main>
@@ -79,10 +80,18 @@
     <Search
       on:search={e => (search = e.detail)}
       on:open={e => (open = e.detail)}
-      {loadedMore} />
+      {loadedMore}
+      on:clear={() => {
+        search = '';
+        listItems = [];
+      }} />
     {#if open}
-      {#if listItems.length}
-        <div class="list-items" transition:fly={{ x: -200, duarion: 300 }}>
+      {#if search && !listItems.length}
+        <div class="list-items">
+          <FakeLoading />
+        </div>
+      {:else if listItems.length && search}
+        <div class="list-items">
           {#each listItems as item (item.index)}
             <div class="list-item-container" transition:slide|local>
               <ListItem
@@ -91,20 +100,26 @@
                 description={item.extract} />
             </div>
           {/each}
-
+          {#if gsroffset !== 400}
+            <div class="text-center">
+              {#if loadedMore}
+                <img
+                  src="./images/loading.svg"
+                  alt=""
+                  class="flex items-center justify-center loading-icon mx-auto" />
+              {:else}
+                <button
+                  class="load-more mx-auto"
+                  on:click={() => {
+                    loadedMore = true;
+                    getResults(search);
+                  }}>
+                  Load More
+                </button>
+              {/if}
+            </div>
+          {/if}
         </div>
-        {#if gsroffset !== 400}
-          <div class="text-center">
-            <button
-              class="load-more mx-auto"
-              on:click={() => {
-                loadedMore = true;
-                getResults(search);
-              }}>
-              Load More
-            </button>
-          </div>
-        {/if}
       {:else}
         <div class="book" transition:scale={{ duration: 300 }}>
           <p>Search for Articles</p>
