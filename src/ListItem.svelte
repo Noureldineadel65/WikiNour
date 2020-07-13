@@ -3,15 +3,6 @@
   export let title = "";
   export let description = "";
   let pageContent = "";
-  function fetchContent() {
-    fetch(
-      `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exsentences=10&exlimit=1&titles=${title}&explaintext=1&formatversion=2&format=json&origin=*`
-    )
-      .then(blob => blob.json())
-      .then(e => {
-        pageContent = e.query.pages[0].extract;
-      });
-  }
 </script>
 
 <style>
@@ -33,44 +24,25 @@
       /* The third layer */ 0 20px 0 -10px #eee,
       /* The third layer shadow */ 0 20px 1px -9px rgba(0, 0, 0, 0.15);
   }
-  li:hover {
-    transform: scale(1.025);
-  }
-  .thumbnail img {
-    width: 100%;
-    object-fit: cover;
-  }
-  .thumbnail {
-    grid-row: 1/-1;
-    grid-column: 1/2;
-    justify-self: center;
-    width: 5rem;
-    height: 5rem;
-  }
+
   .description {
     font-size: 1.3rem;
   }
-  .page-view {
-    font-size: 1.4rem;
-    padding: 2rem;
-    position: absolute;
+  .pagePreview {
     background-color: #fff;
-    z-index: 10;
-    width: 100%;
-    height: 100%;
+    font-size: 1.6rem;
+    width: 40rem;
+    right: 0;
     top: 0;
-    bottom: 0;
-  }
-  .page-view img {
-    width: 100%;
-    margin: 0 0 2rem 0;
-  }
-  .page-view p {
+
+    padding: 2rem;
   }
 </style>
 
-<li on:click={fetchContent}>
+<li>
 
-  <div class="title">{title}</div>
-  <div class="description">{description}</div>
+  <a href={`https://en.wikipedia.org/wiki/${title}`} target="_blank">
+    <div class="title">{title}</div>
+    <div class="description">{description}</div>
+  </a>
 </li>

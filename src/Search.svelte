@@ -1,5 +1,5 @@
 <script>
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
 
   const dispatch = createEventDispatcher();
   let open = false;
@@ -13,6 +13,11 @@
     dispatch("open", open);
     clickHere = !open;
   }
+  onMount(() => {
+    if (searched) {
+      dispatch("search", searched);
+    }
+  });
 </script>
 
 <style>

@@ -11,18 +11,29 @@
   let open = false;
   let loadedMore = false;
   let search = "";
+  let loading = false;
+  let emptyResults = false;
   let gsroffset = 0;
   $: getResults(search);
   function getResults(search) {
     if (search) {
       if (!loadedMore) {
+        emptyResults = false;
+        loading = true;
+        listItems = [];
         fetch(
           `https://en.wikipedia.org/w/api.php?format=json&action=query&generator=search&gsrnamespace=0&prop=pageimages|extracts&exintro&explaintext&exsentences=1&exlimit=max&gsrsearch=${search}&origin=*&pithumbsize=400`
         )
           .then(blob => blob.json())
           .then(e => {
-            gsroffset = e.continue.gsroffset;
-            listItems = Object.values(e.query.pages);
+            loading = false;
+            if (!e.query) {
+              emptyResults = true;
+            } else {
+              emptyResults = false;
+              gsroffset = e.continue ? e.continue.gsroffset : 0;
+              listItems = Object.values(e.query.pages);
+            }
           });
       } else {
         fetch(
@@ -30,7 +41,7 @@
         )
           .then(blob => blob.json())
           .then(e => {
-            gsroffset = e.continue.gsroffset;
+            gsroffset = e.continue ? e.continue.gsroffset : 0;
             listItems = [...listItems, ...Object.values(e.query.pages)];
             loadedMore = false;
           });
@@ -57,7 +68,8 @@
     padding: 1rem 2rem;
     margin: 2rem 0 4rem 0;
   }
-  .book {
+  .book,
+  .error {
     font-size: 2.1rem;
     color: #fff;
 
@@ -66,10 +78,12 @@
     left: 50%;
     transform: translate(-50%, -50%);
   }
-  .book img {
+  .book img,
+  .sad {
     width: 10rem;
   }
-  .book p {
+  .book p,
+  .error p {
     margin-top: -10rem;
   }
   .loading-icon {
@@ -89,6 +103,13 @@
   .scrollup img {
     width: 80%;
     margin-left: -0.25rem;
+  }
+  .list-item-container {
+    position: relative;
+  }
+  .list-item-container:hover {
+    transform: scale(1.025);
+    z-index: 11;
   }
 </style>
 
@@ -113,14 +134,14 @@
         listItems = [];
       }} />
     {#if open}
-      {#if search && !listItems.length}
+      {#if loading}
         <div class="list-items">
           <FakeLoading />
         </div>
       {:else if listItems.length && search}
         <div class="list-items">
           {#each listItems as item (item.index)}
-            <div class="list-item-container" transition:slide|local>
+            <div class="list-item-container relative" transition:slide|local>
               <ListItem
                 img={item.thumbnail ? item.thumbnail.source : ''}
                 title={item.title}
@@ -147,12 +168,18 @@
             </div>
           {/if}
         </div>
-      {:else}
+      {:else if !emptyResults}
         <div class="book" transition:scale={{ duration: 300 }}>
           <p>Search for Articles</p>
           <img src="./images/book.svg" alt="" class="book" />
         </div>
       {/if}
+    {/if}
+    {#if emptyResults}
+      <div class="error" transition:scale={{ duration: 300 }}>
+        <p>No Articles were found</p>
+        <img src="./images/sad.svg" alt="" class="sad mx-auto my-8" />
+      </div>
     {/if}
 
   </div>
