@@ -21,7 +21,7 @@
 </script>
 
 <style>
-  .wiki-circle {
+  .circle {
     width: 8rem;
     height: 8rem;
     border-radius: 50%;
@@ -35,7 +35,7 @@
   .opened {
     margin-top: -22.5rem;
   }
-  .opened .wiki-circle {
+  .opened .circle {
     right: 2.5%;
     /* box-shadow: 0px 0px 16px 10px rgba(255, 255, 255, 1); */
   }
@@ -44,11 +44,11 @@
     opacity: 1;
     /* box-shadow: 0px 0px 16px 10px rgba(255, 255, 255, 1); */
   }
-  .wiki-circle img {
+  .circle img {
     width: 50%;
   }
   .search {
-    top: 50%;
+    top: 37rem;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 70%;
@@ -81,6 +81,20 @@
       top: -12.5rem;
     }
   }
+  @media only screen and (max-width: 400px) {
+    input {
+      font-size: 1.6rem;
+    }
+    .search-icon img,
+    .close-icon img {
+      width: 30%;
+    }
+    .search-icon,
+    .close-icon {
+      right: 11.5% !important;
+      background-color: transparent;
+    }
+  }
 </style>
 
 <div class="search absolute flex items-center" class:opened={open}>
@@ -95,21 +109,30 @@
       <img src="./images/arrow.svg" alt="" />
     </span>
   {/if}
-  <div class="wiki-circle flex items-center justify-center absolute">
-    {#if open}
-      {#if searched}
-        <img
-          src="./images/close.svg"
-          alt=""
-          on:click={() => {
-            searched = '';
-            dispatch('clear');
-          }} />
-      {:else}
-        <img src="./images/search.svg" alt="" on:click={toggleClosing} />
-      {/if}
+
+  {#if open}
+    {#if searched}
+      <div
+        class="circle flex items-center justify-center absolute close-icon"
+        on:click={() => {
+          searched = '';
+          dispatch('clear');
+        }}>
+        <img src="./images/close.svg" alt="" />
+      </div>
     {:else}
-      <img src="./images/wiki.svg" alt="" on:click={toggleClosing} />
+      <div
+        class="circle flex items-center justify-center absolute search-icon"
+        on:click={toggleClosing}>
+        <img src="./images/search.svg" alt="" />
+      </div>
     {/if}
-  </div>
+  {:else}
+    <div
+      class="circle flex items-center justify-center absolute"
+      on:click={toggleClosing}>
+      <img src="./images/wiki.svg" alt="" />
+    </div>
+  {/if}
+
 </div>

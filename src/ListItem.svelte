@@ -1,16 +1,24 @@
 <script>
+  import { scale } from "svelte/transition";
+
   export let img = "";
   export let title = "";
   export let description = "";
   let pageContent = "";
+  let displayPreview = false;
   let pagePreview;
   function getPageContent() {
+    displayPreview = true;
     pagePreview.parentElement.classList.add("active-container");
-    fetch(
-      `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exsentences=10&exlimit=1&titles=${title}&explaintext=1&formatversion=2&format=json&origin=*`
-    )
-      .then(blob => blob.json())
-      .then(e => (pageContent = e.query.pages[0].extract));
+    if (!pageContent) {
+      fetch(
+        `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exsentences=10&exlimit=1&titles=${title}&explaintext=1&formatversion=2&format=json&origin=*`
+      )
+        .then(blob => blob.json())
+        .then(e => {
+          pageContent = e.query.pages[0].extract;
+        });
+    }
   }
 </script>
 
@@ -46,19 +54,26 @@
 
     padding: 2rem;
   }
+  .pagePreview img {
+    width: 21rem;
+  }
+  li:hover .title {
+    text-decoration: underline;
+  }
 </style>
 
-{#if pageContent}
-  <div class="pagePreview absolute">
-    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Harum, hic nemo
-    iste quia maiores labore repellendus est nesciunt ab reiciendis perferendis
-    excepturi et consequatur, ut eos exercitationem perspiciatis sunt nobis?
-  </div>
-{/if}
-<li on:click={getPageContent} bind:this={pagePreview}>
+<li
+  on:mouseenter={getPageContent}
+  bind:this={pagePreview}
+  on:mouseleave={() => {
+    displayPreview = false;
+    pagePreview.parentElement.classList.remove('active-container');
+  }}>
 
   <!-- <a href={`https://en.wikipedia.org/wiki/${title}`} target="_blank"> -->
   <div class="title">{title}</div>
-  <div class="description">{description}</div>
+  <div class="description">
+    {pageContent && displayPreview ? pageContent.slice(0, 700) + '...' : description}
+  </div>
   <!-- </a> -->
 </li>
