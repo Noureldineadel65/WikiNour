@@ -106,10 +106,13 @@
   }
   .list-item-container {
     position: relative;
+    transition: all 0.3s;
+  }
+  :global(.active-container) {
+    z-index: 11;
   }
   .list-item-container:hover {
     transform: scale(1.025);
-    z-index: 11;
   }
 </style>
 

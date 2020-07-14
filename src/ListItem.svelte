@@ -3,6 +3,15 @@
   export let title = "";
   export let description = "";
   let pageContent = "";
+  let pagePreview;
+  function getPageContent() {
+    pagePreview.parentElement.classList.add("active-container");
+    fetch(
+      `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exsentences=10&exlimit=1&titles=${title}&explaintext=1&formatversion=2&format=json&origin=*`
+    )
+      .then(blob => blob.json())
+      .then(e => (pageContent = e.query.pages[0].extract));
+  }
 </script>
 
 <style>
@@ -30,7 +39,7 @@
   }
   .pagePreview {
     background-color: #fff;
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     width: 40rem;
     right: 0;
     top: 0;
@@ -39,10 +48,17 @@
   }
 </style>
 
-<li>
+{#if pageContent}
+  <div class="pagePreview absolute">
+    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Harum, hic nemo
+    iste quia maiores labore repellendus est nesciunt ab reiciendis perferendis
+    excepturi et consequatur, ut eos exercitationem perspiciatis sunt nobis?
+  </div>
+{/if}
+<li on:click={getPageContent} bind:this={pagePreview}>
 
-  <a href={`https://en.wikipedia.org/wiki/${title}`} target="_blank">
-    <div class="title">{title}</div>
-    <div class="description">{description}</div>
-  </a>
+  <!-- <a href={`https://en.wikipedia.org/wiki/${title}`} target="_blank"> -->
+  <div class="title">{title}</div>
+  <div class="description">{description}</div>
+  <!-- </a> -->
 </li>
