@@ -77,7 +77,7 @@
         <ul class="square">
           <li>
             <a
-              href="https://github.com/Noureldineadel65/Pascal"
+              href="https://github.com/Noureldineadel65/WikiNour"
               class="flex items-center"
               target="_blank">
               GitHub
