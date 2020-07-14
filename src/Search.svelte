@@ -1,5 +1,6 @@
 <script>
   import { createEventDispatcher, onMount } from "svelte";
+  import { scale } from "svelte/transition";
 
   const dispatch = createEventDispatcher();
   let open = false;
@@ -40,7 +41,9 @@
     /* box-shadow: 0px 0px 16px 10px rgba(255, 255, 255, 1); */
   }
   .opened input {
-    width: 100%;
+    display: block;
+    transform: translateX(50%) scaleX(1);
+
     opacity: 1;
     /* box-shadow: 0px 0px 16px 10px rgba(255, 255, 255, 1); */
   }
@@ -57,11 +60,13 @@
     font-size: 2rem;
     padding: 1rem 2rem;
     border-radius: 30px;
-    width: 0%;
+    width: 100%;
     opacity: 0;
     position: absolute;
     right: 50%;
-    transform: translateX(50%);
+    display: none;
+    transform: translateX(50%) scaleX(0);
+    transform-origin: left;
     transition: all 0.6s;
     /* width: 100%; */
   }
@@ -104,7 +109,9 @@
     placeholder="Search Encylopedia..."
     bind:value={searched} />
   {#if clickHere}
-    <span class="click-here text-white absolute flex items-center flex-col">
+    <span
+      class="click-here text-white absolute flex items-center flex-col"
+      transition:scale>
       <span>Click Here</span>
       <img src="./images/arrow.svg" alt="" />
     </span>
@@ -117,20 +124,23 @@
         on:click={() => {
           searched = '';
           dispatch('clear');
-        }}>
+        }}
+        transition:scale>
         <img src="./images/close.svg" alt="" />
       </div>
     {:else}
       <div
         class="circle flex items-center justify-center absolute search-icon"
-        on:click={toggleClosing}>
+        on:click={toggleClosing}
+        transition:scale>
         <img src="./images/search.svg" alt="" />
       </div>
     {/if}
   {:else}
     <div
       class="circle flex items-center justify-center absolute"
-      on:click={toggleClosing}>
+      on:click={toggleClosing}
+      transition:scale>
       <img src="./images/wiki.svg" alt="" />
     </div>
   {/if}
