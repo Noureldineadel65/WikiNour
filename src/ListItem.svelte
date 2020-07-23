@@ -68,6 +68,9 @@
   on:mouseleave={() => {
     displayPreview = false;
     pagePreview.parentElement.classList.remove('active-container');
+  }}
+  on:click={() => {
+    window.open(`https://en.wikipedia.org/wiki/${title}`, '_blank');
   }}>
 
   <!-- <a href={`https://en.wikipedia.org/wiki/${title}`} target="_blank"> -->
